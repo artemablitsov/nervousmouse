@@ -18,14 +18,28 @@ namespace NervousMouse
                 Random rnd = new Random();
                 while (true)
                 {
+                    if (taskBeingNervousToken.Token.IsCancellationRequested)
+                        break;
                     if (!m_PauseTask)
                     {
                         Win32.POINT p = new Win32.POINT();
                         Win32.GetCursorPos(out p);
-                        Win32.SetCursorPos(p.x + (rnd.Next(2) == 0 ? -1 : 1) * (rnd.Next(2) + 1)
-                                         , p.y + (rnd.Next(2) == 0 ? -1 : 1) * (rnd.Next(2) + 1));
+                        /*Win32.SetCursorPos(p.x + (rnd.Next(50) == 0 ? -1 : 1) * (rnd.Next(50) + 1)
+                                         , p.y + (rnd.Next(50) == 0 ? -1 : 1) * (rnd.Next(50) + 1));*/
+                        var x = 10;
+                        for (int i = 0; i < x; i++)
+                        {
+                            Win32.SetCursorPos(p.x + i*100, p.y);
+                            Thread.Sleep(10*i);
+                        }
+                        Win32.GetCursorPos(out p);
+                        for (int i = 0; i < x; i++)
+                        {
+                            Win32.SetCursorPos(p.x - i*100, p.y);
+                            Thread.Sleep(10*i);
+                        }
                     }
-                    Thread.Sleep(1000);
+                    Thread.Sleep(3000);
                 }
             }, taskBeingNervousToken.Token);
         }
