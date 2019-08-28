@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -22,24 +23,21 @@ namespace NervousMouse
                         break;
                     if (!m_PauseTask)
                     {
-                        Win32.POINT p = new Win32.POINT();
-                        Win32.GetCursorPos(out p);
-                        /*Win32.SetCursorPos(p.x + (rnd.Next(50) == 0 ? -1 : 1) * (rnd.Next(50) + 1)
-                                         , p.y + (rnd.Next(50) == 0 ? -1 : 1) * (rnd.Next(50) + 1));*/
-                        var x = 10;
-                        for (int i = 0; i < x; i++)
+                        Win32.POINT initialPos = new Win32.POINT();
+                        Win32.GetCursorPos(out initialPos);
+                        int radius = 300;
+                        for (double i = -180.0; i < 180.0; i += 1)
                         {
-                            Win32.SetCursorPos(p.x + i*100, p.y);
-                            Thread.Sleep(10*i);
+                            double angle = i * System.Math.PI / 180;
+                            int x = (int)(radius * System.Math.Cos(angle));
+                            int y = (int)(radius * System.Math.Sin(angle));
+
+                            Win32.SetCursorPos(initialPos.x + x + radius, initialPos.y + y);
+                            Thread.Sleep(3);
                         }
-                        Win32.GetCursorPos(out p);
-                        for (int i = 0; i < x; i++)
-                        {
-                            Win32.SetCursorPos(p.x - i*100, p.y);
-                            Thread.Sleep(10*i);
-                        }
+                        Win32.SetCursorPos(initialPos.x, initialPos.y);
                     }
-                    Thread.Sleep(3000);
+                    Thread.Sleep(5000);
                 }
             }, taskBeingNervousToken.Token);
         }
